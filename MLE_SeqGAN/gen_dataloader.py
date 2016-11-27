@@ -1,18 +1,19 @@
 import numpy as np
+import collections
 
 
 class Gen_Data_loader():
     def __init__(self, batch_size):
         self.batch_size = batch_size
         self.token_stream = []
-
+        self.word2idx = collections.defaultdict()
     def create_batches(self, data_file):
         self.token_stream = []
         with open(data_file, 'r') as f:
             for line in f:
                 line = line.strip()
                 line = line.split()
-                parse_line = [int(x) for x in line]
+                parse_line = [x for x in line]
                 if len(parse_line) == 20:
                     self.token_stream.append(parse_line)
 

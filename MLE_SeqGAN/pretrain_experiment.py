@@ -20,7 +20,7 @@ SEED = 88
 BATCH_SIZE = 64
 
 ##########################################################################################
-positive_file = 'save/real_data.txt'
+positive_file = 'save/all.code'
 negative_file = 'target_generate/generator_sample.txt'
 eval_file = 'target_generate/eval_file.txt'
 
@@ -92,7 +92,7 @@ def main():
     sess = tf.Session(config=config)
     sess.run(tf.initialize_all_variables())
 
-    generate_samples(sess, target_lstm, 64, 10000, positive_file)
+    #generate_samples(sess, target_lstm, 64, 10000, positive_file)
     gen_data_loader.create_batches(positive_file)
 
     log = open('log/experiment-log.txt', 'w')
@@ -104,6 +104,7 @@ def main():
         loss = pre_train_epoch(sess, generator, gen_data_loader)
         if epoch % 5 == 0:
             generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
+            print(eval_file)
             likelihood_data_loader.create_batches(eval_file)
             test_loss = target_loss(sess, target_lstm, likelihood_data_loader)
             print 'pre-train epoch ', epoch, 'test_loss ', test_loss

@@ -40,7 +40,7 @@ dis_batch_size = 64
 dis_num_epochs = 3
 dis_alter_epoch = 50
 
-positive_file = 'save/real_data.txt'
+positive_file = 'save/all.code'
 negative_file = 'target_generate/generator_sample.txt'
 eval_file = 'target_generate/eval_file.txt'
 
@@ -72,7 +72,24 @@ def generate_samples(sess, trainable_model, batch_size, generated_num, output_fi
         for poem in generated_samples:
             buffer = ' '.join([str(x) for x in poem]) + '\n'
             # buffer = u''.join([words[x] for x in poem]).encode('utf-8') + '\n'
+            print(buffer)
             fout.write(buffer)
+
+def generate_samples_with_words(sess, trainable_model, batch_size, generated_num, output_file, data_loader):
+    #  Generated Samples
+    generated_samples = []
+    start = time.time()
+    for _ in range(int(generated_num / batch_size)):
+        generated_samples.extend(trainable_model.generate(sess))
+    end = time.time()
+    # print 'Sample generation time:', (end - start)
+
+    with open(output_file, 'w') as fout:
+        for poem in generated_samples:
+            buffer = u''.join([data_loader.token_stream[x] for x in poem]).encode('utf-8') + '\n'
+            print(buffer)
+            fout.write(buffer)
+
 
 
 def target_loss(sess, target_lstm, data_loader):
@@ -163,7 +180,7 @@ def main():
         print 'pre-train epoch:', epoch
         loss = pre_train_epoch(sess, generator, gen_data_loader)
         if epoch % 5 == 0:
-            generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
+            generate_samples_with(sess, generator, BATCH_SIZE, generated_num, eval_file) # TODO
             likelihood_data_loader.create_batches(eval_file)
             test_loss = target_loss(sess, target_lstm, likelihood_data_loader)
             print 'pre-train epoch ', epoch, 'test_loss ', test_loss
