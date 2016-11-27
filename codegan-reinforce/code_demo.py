@@ -14,7 +14,7 @@ HIDDEN_DIM = 25
 SEQ_LENGTH = 10
 START_TOKEN = 0
 
-EPOCH_ITER = 8000
+EPOCH_ITER = 3000
 CURRICULUM_RATE = 0.02  # how quickly to move from supervised training to unsupervised
 TRAIN_ITER = 100000  # generator/discriminator alternating
 D_STEPS = 3  # how many times to train the discriminator per generator step
@@ -68,7 +68,6 @@ def main():
     np.random.seed(SEED)
 
     token_stream = get_data()
-    print(token_stream)
     assert START_TOKEN == 0
     words = ['_START'] + list(set(token_stream))
     word2idx = dict((word, i) for i, word in enumerate(words))
