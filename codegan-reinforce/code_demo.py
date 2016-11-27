@@ -28,13 +28,10 @@ def tokenize(s):
 
 
 def get_data():
-    token_stream = []
     with open(DATA_FILE, 'r') as f:
-        for line in f:
-            toks = tokenize(line)
-            for tok in toks:
-                token_stream.append("".join(toks))
-    return token_stream
+        data = f.read()
+    tokens = data.split()
+    return tokens
 
 
 class BookGRU(model.GRU):
@@ -71,6 +68,7 @@ def main():
     np.random.seed(SEED)
 
     token_stream = get_data()
+    print(token_stream)
     assert START_TOKEN == 0
     words = ['_START'] + list(set(token_stream))
     word2idx = dict((word, i) for i, word in enumerate(words))
