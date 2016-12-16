@@ -10,6 +10,8 @@ from rollout import ROLLOUT
 from target_lstm import TARGET_LSTM
 import cPickle
 
+from text_generator import TextGenerator
+
 #########################################################################################
 #  Generator  Hyper-parameters
 #########################################################################################
@@ -40,9 +42,12 @@ dis_batch_size = 64
 dis_num_epochs = 3
 dis_alter_epoch = 50
 
-positive_file = 'save/all.code'
+positive_file = 'save/real_data.txt'
 negative_file = 'target_generate/generator_sample.txt'
 eval_file = 'target_generate/eval_file.txt'
+
+vocabulary_file = '../corpus/index2word.pickle'
+index2word = cPickle.load(open(vocabulary_file, "rb"))
 
 generated_num = 10000
 
@@ -72,24 +77,7 @@ def generate_samples(sess, trainable_model, batch_size, generated_num, output_fi
         for poem in generated_samples:
             buffer = ' '.join([str(x) for x in poem]) + '\n'
             # buffer = u''.join([words[x] for x in poem]).encode('utf-8') + '\n'
-            print(buffer)
             fout.write(buffer)
-
-def generate_samples_with_words(sess, trainable_model, batch_size, generated_num, output_file, data_loader):
-    #  Generated Samples
-    generated_samples = []
-    start = time.time()
-    for _ in range(int(generated_num / batch_size)):
-        generated_samples.extend(trainable_model.generate(sess))
-    end = time.time()
-    # print 'Sample generation time:', (end - start)
-
-    with open(output_file, 'w') as fout:
-        for poem in generated_samples:
-            buffer = u''.join([data_loader.token_stream[x] for x in poem]).encode('utf-8') + '\n'
-            print(buffer)
-            fout.write(buffer)
-
 
 
 def target_loss(sess, target_lstm, data_loader):
@@ -134,16 +122,21 @@ def main():
     random.seed(SEED)
     np.random.seed(SEED)
 
+    stringGenerator = TextGenerator('../corpus/index2word.pickle', '../corpus/word2index.pickle', '../corpus/all.code')
+
     assert START_TOKEN == 0
 
     gen_data_loader = Gen_Data_loader(BATCH_SIZE)
     likelihood_data_loader = Likelihood_data_loader(BATCH_SIZE)
-    vocab_size = 5000
+    vocab_size = len(stringGenerator.index2Word)
     dis_data_loader = Dis_dataloader()
 
     best_score = 1000
     generator = get_trainable_model(vocab_size)
     target_params = cPickle.load(open('save/target_params.pkl'))
+    target_params[00] = np.random.rand(vocab_size, 32).astype(np.float32)
+    target_params[-2] = np.random.rand(32, vocab_size).astype(np.float32)
+    target_params[-1] = np.random.rand(vocab_size).astype(np.float32)
     target_lstm = TARGET_LSTM(vocab_size, 64, 32, 32, 20, 0, target_params)
 
     with tf.variable_scope('discriminator'):
@@ -169,7 +162,8 @@ def main():
     sess = tf.Session(config=config)
     sess.run(tf.initialize_all_variables())
 
-    generate_samples(sess, target_lstm, 64, 10000, positive_file)
+    #generate_samples(sess, target_lstm, 64, 10000, positive_file)
+    stringGenerator.saveSamplesToFile(20, 10000, positive_file)
     gen_data_loader.create_batches(positive_file)
 
     log = open('log/experiment-log.txt', 'w')
@@ -180,7 +174,7 @@ def main():
         print 'pre-train epoch:', epoch
         loss = pre_train_epoch(sess, generator, gen_data_loader)
         if epoch % 5 == 0:
-            generate_samples_with(sess, generator, BATCH_SIZE, generated_num, eval_file) # TODO
+            generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
             likelihood_data_loader.create_batches(eval_file)
             test_loss = target_loss(sess, target_lstm, likelihood_data_loader)
             print 'pre-train epoch ', epoch, 'test_loss ', test_loss

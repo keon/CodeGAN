@@ -1,10 +1,13 @@
-import model
+import cPickle
 import numpy as np
-import tensorflow as tf
 import random
+
+import tensorflow as tf
+
+import model
+from text_generator import TextGenerator
 from gen_dataloader import Gen_Data_loader, Likelihood_data_loader
 from target_lstm import TARGET_LSTM
-import cPickle
 
 #########################################################################################
 #  Generator  Hyper-parameters
@@ -20,9 +23,10 @@ SEED = 88
 BATCH_SIZE = 64
 
 ##########################################################################################
-positive_file = 'save/all.code'
+positive_file = 'save/real_data.txt'
 negative_file = 'target_generate/generator_sample.txt'
 eval_file = 'target_generate/eval_file.txt'
+vocabulary_file = '../corpus/index2word.pickle'
 
 generated_num = 10000
 
@@ -75,15 +79,21 @@ def pre_train_epoch(sess, trainable_model, data_loader):
 def main():
     random.seed(SEED)
     np.random.seed(SEED)
+    stringGenerator = TextGenerator('../corpus/index2word.pickle', '../corpus/word2index.pickle', '../corpus/all.code')
+
 
     assert START_TOKEN == 0
 
     gen_data_loader = Gen_Data_loader(BATCH_SIZE)
     likelihood_data_loader = Likelihood_data_loader(BATCH_SIZE)
-    vocab_size = 5000
+    #vocab_size = 5000
+    vocab_size = len(stringGenerator.index2Word)
 
     generator = get_trainable_model(vocab_size)
     target_params = cPickle.load(open('save/target_params.pkl'))
+    target_params[00] = np.random.rand(vocab_size, 32).astype(np.float32)
+    target_params[-2] = np.random.rand(32, vocab_size).astype(np.float32)
+    target_params[-1] = np.random.rand(vocab_size).astype(np.float32)
     target_lstm = TARGET_LSTM(vocab_size, 64, 32, 32, 20, 0, target_params)
 
     config = tf.ConfigProto()
@@ -93,6 +103,7 @@ def main():
     sess.run(tf.initialize_all_variables())
 
     #generate_samples(sess, target_lstm, 64, 10000, positive_file)
+    stringGenerator.saveSamplesToFile(20, 10000, positive_file)
     gen_data_loader.create_batches(positive_file)
 
     log = open('log/experiment-log.txt', 'w')
@@ -103,15 +114,16 @@ def main():
         print 'pre-train epoch:', epoch
         loss = pre_train_epoch(sess, generator, gen_data_loader)
         if epoch % 5 == 0:
-            generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
-            print(eval_file)
+            #generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
+            stringGenerator.saveSamplesToFile(20, generated_num, eval_file)
             likelihood_data_loader.create_batches(eval_file)
             test_loss = target_loss(sess, target_lstm, likelihood_data_loader)
             print 'pre-train epoch ', epoch, 'test_loss ', test_loss
             buffer = str(epoch) + ' ' + str(test_loss) + '\n'
             log.write(buffer)
 
-    generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
+    #generate_samples(sess, generator, BATCH_SIZE, generated_num, eval_file)
+    stringGenerator.saveSamplesToFile(20, generated_num, eval_file)
     likelihood_data_loader.create_batches(eval_file)
     test_loss = target_loss(sess, target_lstm, likelihood_data_loader)
     buffer = 'After supervised-training:' + ' ' + str(test_loss) + '\n'
