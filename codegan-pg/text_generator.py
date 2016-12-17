@@ -130,7 +130,7 @@ class TextGenerator:
         #strWords = " ".join(words)
 if __name__ == "__main__":
     testInput = "./target_generate/generator_sample.txt"
-    generator = TextGenerator('index2word.pickle', 'word2index.pickle', '../corpus_tools/data/source/Charles Dickens - Oliver Twist.txt')
+    generator = TextGenerator('../corpus/index2word.pickle', '../corpus/word2index.pickle', '../corpus/all.code')
 
     for _ in range(20):
         testSequenceIndices = generator.generateSequence(20)

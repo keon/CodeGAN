@@ -1,6 +1,5 @@
 # CodeGAN 
 
-This is a 
 Source Code Generation with Generative Adversarial Networks (SeqGAN)
 
 ## Requirements: 
@@ -8,9 +7,9 @@ Source Code Generation with Generative Adversarial Networks (SeqGAN)
 * Cuda 7.5 or higher (for GPU)  
 * nltk python package
 
-## Comparison with other Models
+## Comparison with other Models & Experiments
 
-*Character Recurrent Neural Network*
+**Character Recurrent Neural Network**
 ```
 def media ( self  ) :
     choices = s
@@ -32,9 +31,9 @@ self . _funacod_location . copy ( i  )
 ```
 
 It writes some text that looks like a program.
-But clearly Char-RNN is a bad programmer with lots of bugs.
+But clearly Char-RNN is a bad programmer.
 
-*Word Recurrent Neural Network*
+**Word Recurrent Neural Network**
 ```
 class number_format ( _html_parser . signals . alias  ) :
     def __init__ ( self , commit = False  ) :
@@ -58,11 +57,11 @@ class number_format ( _html_parser . signals . alias  ) :
 As you can see, Word-RNN can hold on to the context longer than Char-RNN,
 thus it writes a longer code that is stable.
 
-*CodeGAN - Reinforce*
+**CodeGAN - Reinforce**
 
 Debugging...
 
-*CodeGAN - Polcy Gradient*
+**CodeGAN - Polcy Gradient**
 
 Training...
 
@@ -72,12 +71,16 @@ The model used for the code generation is called Sequence Generative Adversarial
 
 ![](https://github.com/keonkim/CodeGAN/blob/master/images/seqgan.png)
 
+The illustration of SeqGAN.
+Left: D is trained over the real data and the generated data by G.
+Right: G is trained by policy gradient where the final reward signal is provided by D and
+is passed back to the intermediate action value via Monte Carlo search.
 
-The illustration of SeqGAN. Left: D is trained over the real data and the generated data by G. Right: G is trained by policy gradient where the final reward signal is provided by D and is passed back to the intermediate action value via Monte Carlo search.  
+The research paper [SeqGAN: Sequence Generative Adversarial Nets with Policy Gradient](http://arxiv.org/abs/1609.05473)
+has been accepted at the Thirty-First AAAI Conference on Artificial Intelligence (AAAI-17).
+The final version of the paper will be updated soon.
 
-The research paper [SeqGAN: Sequence Generative Adversarial Nets with Policy Gradient](http://arxiv.org/abs/1609.05473) has been accepted at the Thirty-First AAAI Conference on Artificial Intelligence (AAAI-17). The final version of the paper will be updated soon.
-
-We provide example codes to repeat the synthetic data experiments with oracle evaluation mechanisms.
+## Run
 Move to codegan-pg folder and run
 ```
 python pretrain_experiment.py
@@ -88,6 +91,11 @@ In the same folder, run
 python sequence_gan.py
 ```
 will start SeqGAN training.
+
+
+## Aknowledgements
+This is one of many exiting projects going on in the *DeepCoding Project*.
+Stay tuned for more awesome stuff.
 
 Note:
 I built it on top of the original implementation of [SeqGAN](https://github.com/LantaoYu/SeqGAN) which is 
