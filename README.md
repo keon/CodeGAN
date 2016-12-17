@@ -30,8 +30,8 @@ self . _funacod_location . copy ( i  )
     return s
 ```
 
-It writes some text that looks like a program.
-But clearly Char-RNN is a bad programmer.
+It writes some texts that look like a program.
+But clearly Char-RNN is a bad programmer. (it can implement functions).
 
 **Word Recurrent Neural Network**
 ```
@@ -55,7 +55,7 @@ class number_format ( _html_parser . signals . alias  ) :
 ```
 
 As you can see, Word-RNN can hold on to the context longer than Char-RNN,
-thus it writes a longer code that is stable.
+thus it writes a longer program. (it can implement classes).
 
 **CodeGAN - Reinforce**
 
