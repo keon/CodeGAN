@@ -1,19 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import string
 import re
 import nltk
 import cPickle as pickle
 from random import randint
-
-caps = "([A-Z])"
-prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
-suffixes = "(Inc|Ltd|Jr|Sr|Co)"
-starters = "(Mr|Mrs|Ms|Dr|He\s|She\s|It\s|They\s|Their\s|Our\s|We\s|But\s|However\s|That\s|This\s|Wherever)"
-acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
-websites = "[.](com|net|org|io|gov)"
-
-wordsToIgnore = ["\n", "''", '``']
 
 
 
@@ -28,13 +18,12 @@ class TextGenerator:
 
         with open(corpus, 'r') as f:
             content = ' '.join(f.readlines())
-            for wordToIgnore in wordsToIgnore:
-                content = content.replace(wordToIgnore, '')
-            self.sentences = [nltk.word_tokenize(sentence) for sentence in self.splitIntoSentences(content) if len(sentence) <= sentenceLengthLimit]
-            self.sentencesCount = len(self.sentences)
-            words = nltk.word_tokenize(content)
+            self.sentences = []
+            self.sentencesCount = 0
+            # TODO process blocks instead of lines
+            self.sentences, self.sentencesCount = self.splitBlocks(f)
+            words = nltk.word_tokenize(self.spacer(content))
             self.tokens = [word.lower() for word in words]
-            #add blank space
             self.word2Index[''] = [0]
             self.index2Word[0] = ''
             for word in self.tokens:
@@ -54,31 +43,43 @@ class TextGenerator:
 
         self.corpusWordsCount = len(self.tokens)
 
-    def splitIntoSentences(self, text):
-        text = " " + text + "  "
-        text = text.replace("\n", " ")
-        text = re.sub(prefixes, "\\1<prd>", text)
-        text = re.sub(websites, "<prd>\\1", text)
-        if "Ph.D" in text: text = text.replace("Ph.D.", "Ph<prd>D<prd>")
-        text = re.sub("\s" + caps + "[.] ", " \\1<prd> ", text)
-        text = re.sub(acronyms + " " + starters, "\\1<stop> \\2", text)
-        text = re.sub(caps + "[.]" + caps + "[.]" + caps + "[.]", "\\1<prd>\\2<prd>\\3<prd>", text)
-        text = re.sub(caps + "[.]" + caps + "[.]", "\\1<prd>\\2<prd>", text)
-        text = re.sub(" " + suffixes + "[.] " + starters, " \\1<stop> \\2", text)
-        text = re.sub(" " + suffixes + "[.]", " \\1<prd>", text)
-        text = re.sub(" " + caps + "[.]", " \\1<prd>", text)
-        if "”" in text: text = text.replace(".”", "”.")
-        if "\"" in text: text = text.replace(".\"", "\".")
-        if "!" in text: text = text.replace("!\"", "\"!")
-        if "?" in text: text = text.replace("?\"", "\"?")
-        text = text.replace(".", ".<stop>")
-        text = text.replace("?", "?<stop>")
-        text = text.replace("!", "!<stop>")
-        text = text.replace("<prd>", ".")
-        sentences = text.split("<stop>")
-        sentences = sentences[:-1]
-        sentences = [s.strip() for s in sentences]
-        return sentences
+    def spacer(self, line, postprocess=False):
+        line = line.replace('\n', ' _enter ')
+        line = line.replace('    ', ' _tab ')
+        line = line.replace('=', ' = ')
+        line = line.replace('+ =', '+=')
+        line = line.replace('- =', '-=')
+        line = line.replace('> =', '>=')
+        line = line.replace('< =', '<=')
+        line = line.replace('! =', '!=')
+        line = line.replace('=  =', '==')
+        line = line.replace('("', '( "')
+        line = line.replace('",', '" ,')
+        line = line.replace('(', ' ( ')
+        line = line.replace(')', ' ) ')
+        line = line.replace('[', ' [ ')
+        line = line.replace(']', ' ] ')
+        line = line.replace(',', ' , ')
+        line = line.replace('.', ' . ')
+        line = " ".join(line.split())
+        if postprocess == True:
+            line = line.replace('_enter','\n')
+            line = line.replace('_tab', '\t')
+            line = " ".join(line.split())
+        line = line.strip()
+        return line
+
+    def  splitBlocks(self, f):
+        blocks = []
+        block = []
+        count = 0
+        for i, line in enumerate(f):
+            block += nltk.word_tokenize(self.spacer(line))
+            if len(line) == 1 and line == '\n':
+                blocks.append(block)
+                count += 1
+                block = []
+        return blocks, count
 
     def generateSequence(self, length):
         if self.sentencesCount == 0:
@@ -94,7 +95,6 @@ class TextGenerator:
                 tokensSequence += [0] * spacesToAppend
             return tokensSequence
 
-
     def saveSamplesToFile(self, length, samplesCount, fileToSave):
         samples = [self.generateSequence(length) for _ in range(samplesCount)]
         with open(fileToSave, "w+") as text_file:
@@ -103,28 +103,11 @@ class TextGenerator:
                 text_file.write(strSentence)
 
     def getTextFromTokenSequence(self, lineOfTokens):
-        endOfSentenceSigns = ['.', '?', '!']
-        sentenceSigns = [':', ';', ',', '\'', '\'s']
-        sequencesToSkip = ["''", "``"]
-        isEndOfSentence = False
         strWords = ""
+        print(">>>", lineOfTokens)
         indices = [int(strIndex) for strIndex in lineOfTokens.split(" ")]
         words = [self.index2Word[index] for index in indices if index in self.index2Word]
-        for word in words:
-            if word in sequencesToSkip:
-                continue
-            if word in sentenceSigns:
-                strWords += word
-                continue
-            if word in endOfSentenceSigns:
-                strWords += word
-                isEndOfSentence = True
-            else:
-                if isEndOfSentence:
-                    word = word.title()
-                    isEndOfSentence = False
-                strWords += " %s" % word
-        return strWords.lstrip()
+        return "".join(words)
 
 
         #strWords = " ".join(words)
@@ -135,16 +118,13 @@ if __name__ == "__main__":
     for _ in range(20):
         testSequenceIndices = generator.generateSequence(20)
         testSequenceWords = [generator.index2Word[index] for index in testSequenceIndices if index in generator.index2Word]
-        print " ".join(testSequenceWords)
+        print(" ".join(testSequenceWords))
 
 
-    with open(testInput, 'r') as f:
-        sentences = f.readlines()
+    # with open(testInput, 'r') as f:
+        # sentences = f.readlines()
 
-    for strSentence in sentences:
-        strWords = generator.getTextFromTokenSequence(strSentence)
-        #indices = [int(strIndex) for strIndex in strSentence.split(" ")]
-        #words = [generator.index2Word[index] for index in indices if index in generator.index2Word]
-        #strWords = " ".join(words)
-        print strWords
+    # for strSentence in sentences:
+        # strWords = generator.getTextFromTokenSequence(strSentence)
+        # print strWords
 
