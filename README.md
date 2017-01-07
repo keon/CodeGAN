@@ -9,8 +9,8 @@ Source Code Generation with Generative Adversarial Networks (SeqGAN)
 
 ## Comparison with other Models & Experiments
 
-Code Written by: **Character Recurrent Neural Network**
-```
+### Code Written by: **Character Recurrent Neural Network**
+```python
 def media ( self  ) :
     choices = s
 def cgets_to_reating_request ( _default  ) :
@@ -33,8 +33,8 @@ self . _funacod_location . copy ( i  )
 It writes some texts that look like a program.
 But clearly Char-RNN is a bad programmer. (it can implement functions).
 
-Code Written by: **Word Recurrent Neural Network**
-```
+### Code Written by: **Word Recurrent Neural Network**
+```python
 class number_format ( _html_parser . signals . alias  ) :
     def __init__ ( self , commit = False  ) :
         widgets = value
@@ -57,13 +57,13 @@ class number_format ( _html_parser . signals . alias  ) :
 As you can see, Word-RNN can hold on to the context longer than Char-RNN,
 thus it writes a longer program. (it can implement classes).
 
-**CodeGAN - Reinforce**
+### Code Written By: **CodeGAN - Reinforce**
 
 Debugging...
 
-Code Written By: **CodeGAN - Polcy Gradient**
+### Code Written By: **CodeGAN - Polcy Gradient**
 
-```
+```python
 ' , 5 : _ ( : ] for key , default = '/dev/null ' , help = 'nominates a
 , 'sender ' , 'reply-to ' , 'to ' , 400 , '-a ' , action = 'store ' ,
 ' , ord ( ext , true ) : 
