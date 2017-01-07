@@ -104,10 +104,9 @@ class TextGenerator:
 
     def getTextFromTokenSequence(self, lineOfTokens):
         strWords = ""
-        print(">>>", lineOfTokens)
         indices = [int(strIndex) for strIndex in lineOfTokens.split(" ")]
         words = [self.index2Word[index] for index in indices if index in self.index2Word]
-        return "".join(words)
+        return " ".join(words)
 
 
         #strWords = " ".join(words)
@@ -121,10 +120,10 @@ if __name__ == "__main__":
         print(" ".join(testSequenceWords))
 
 
-    # with open(testInput, 'r') as f:
-        # sentences = f.readlines()
+    with open(testInput, 'r') as f:
+        sentences = f.readlines()
 
-    # for strSentence in sentences:
-        # strWords = generator.getTextFromTokenSequence(strSentence)
-        # print strWords
+    for strSentence in sentences:
+        strWords = generator.getTextFromTokenSequence(strSentence)
+        print(strWords)
 
