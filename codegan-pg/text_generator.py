@@ -103,10 +103,17 @@ class TextGenerator:
                 text_file.write(strSentence)
 
     def getTextFromTokenSequence(self, lineOfTokens):
-        strWords = ""
+        strWords = []
         indices = [int(strIndex) for strIndex in lineOfTokens.split(" ")]
         words = [self.index2Word[index] for index in indices if index in self.index2Word]
-        return " ".join(words)
+        for word in words:
+            if word.strip() == "_enter":
+                strWords.append('\n')
+            elif word.strip() == "_tab":
+                strWords.append('\t')
+            else:
+                strWords.append(word)
+        return " ".join(strWords)
 
 
         #strWords = " ".join(words)

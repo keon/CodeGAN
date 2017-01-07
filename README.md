@@ -9,7 +9,7 @@ Source Code Generation with Generative Adversarial Networks (SeqGAN)
 
 ## Comparison with other Models & Experiments
 
-**Character Recurrent Neural Network**
+Code Written by: **Character Recurrent Neural Network**
 ```
 def media ( self  ) :
     choices = s
@@ -33,7 +33,7 @@ self . _funacod_location . copy ( i  )
 It writes some texts that look like a program.
 But clearly Char-RNN is a bad programmer. (it can implement functions).
 
-**Word Recurrent Neural Network**
+Code Written by: **Word Recurrent Neural Network**
 ```
 class number_format ( _html_parser . signals . alias  ) :
     def __init__ ( self , commit = False  ) :
@@ -61,27 +61,64 @@ thus it writes a longer program. (it can implement classes).
 
 Debugging...
 
-**CodeGAN - Polcy Gradient**
+Code Written By: **CodeGAN - Polcy Gradient**
 
 ```
-(().__doc__=func.mime.<month>\d{1,2})-(?
-contents.rel.creation.utils.models.tzinfo.creation.template.management.image.utils.utils.utils..value,
-self.dirname(writer.month,d._meta.core.data.isdir(os.match(bmatch.value,
-self.introspection.write(self.six.=self._archive.name=nameself.quote_name(self.dicts.tzinfo.utils.core.attname]=.')
-parser.%new_path,self.__args,**self.pk.add(opts.model.get(',','._out.compress(pickle.children.checks.lru_cacheinstead.
-_out.style.nodelist_true.xml.management.path.dayifself.empty_form.utils.!
-template..errnoore.field_name).options._current[field.%s.mail.paginator.iteritems(self.serializers.day,
-dt.match(bmatch._default_manager.fk.utils.__class__.data.xml.rawdataself.write(self.append(self._dir)or
-utils._meta.__dict__.validators.abspath(os.platform.')parser.'._tzname=self.!
-utils.forms.path.date.match(register_to.value,self._func_pathself.path.*ritem.loader.utils.attname]=.endswith('.data.file)
-path.widget.style.stream._out=outself.xml.widget.path..content).compile(r(^[!
-environ.')parser.stdout.datetime.core.andnote.utils.moves.moves.size=sizeself.http._errors[field].core.stdout.*?
-__name__,bits.))\.://,re.rel.#$%&'*+/=?
-db.:\.isdir(os.utils.write(self.utils.core.path.path.=y._css.:\.
+' , 5 : _ ( : ] for key , default = '/dev/null ' , help = 'nominates a
+, 'sender ' , 'reply-to ' , 'to ' , 400 , '-a ' , action = 'store ' ,
+' , ord ( ext , true ) : 
+ 	 	 	 	 	 	 declared_fields . choice_cache =
+' ) , 'max_decimal_places ' : ungettext_lazy ( 'ensure that there are no more than % ( max ) s
+) : 
+ 	 def __init__ ( self , * args , ** kwargs ) : 
+ 	 	 	
+' , action = 'store_false ' , dest = 'load_initial_data ' , default = true , help = 'tells django
+, ( k , { ) ) , 'max_whole_digits ' : ungettext_lazy ( 'ensure that there are no more than
+, 'migrate_failure ' : { 'fg ' : 'red ' , 'opts ' : ( 'bold ' , ) }
+, exclude = use_natural_foreign_keys == '' and not self . port is none : 
+ 	 	 	 	 	
+are no more than % ( max ) s is not . ' ' . ' ) 
+ collect .
+' , action = 'store_false ' , dest = 'load_initial_data ' , default = false , help = 'tells =
+) : 
+ 	 	 def __init__ ( self , * args , ** kwargs ) : 
+ 	 	
+, 'get_language_bidi ' , 'hiddeninput ' , 'multiplehiddeninput ' , 'clearablefileinput ' , 'fileinput ' , 'dateinput ' , 'datetimeinput
+' ) 
+ parser . add_argument ( ' -- database ' -- 'mar ' : ( ) -- 'bpython '
+, { 'fg ' : 'red ' , 'opts ' : ( 'bold ' , ' ) , 'sender '
+) 
+ parser . add_argument ( ' -- no-initial-data ' , action = 'store_false ' , dest = 'load_initial_data '
+) : 
+ return mark_safe ( '\n ' . join ( model ) s . ' , } 
+ 	
+= ' ) , 'max_decimal_places ' : ungettext_lazy ( 'ensure that there are no more than % ( max )
+) , 'max_decimal_places ' : ungettext_lazy ( 'ensure that there are no more than % ( max ) s {
+' , help = 'tells django not not pk . using argument class natural-foreign appcommand ( ) : 
+ from
+* args , s = ' , `` '' , 1 : 
+ 	 	 	 	 	 return ``
+) : 
+ 	 	 def __init__ ( self , * args , ** kwargs ) : 
+ 	 	
+' , action = 'store_false ' , dest = 'load_initial_data ' , default = true , help = 'tells django
+' ) 
+ parser . add_argument ( ' -- all ' , '-a ' , action = 'store_true ' ,
+) } 
+ 	 def __init__ ( self , * args , ** kwargs ) : 
+ 	 	 	
+, action = 'store_false ' , dest = 'load_initial_data ' , default = true , help = minute == default_db_alias
+, 'sender ' , 'reply-to ' , 'to ' , 'cc ' , 'bcc ' , 'resent-from ' , keyerror
+	 	 def __init__ ( self , * args , ** kwargs ) : 
+ 	 	 	 self .
+, 'migrate_failure ' : { 'fg ' : 'red ' , 'opts ' : ( 'bold ' , ) }
+, 'http_bad_request ' : { 'fg ' : 'red ' , 'opts ' : ( 'bold ' , ) }
+' , 'httpresponseservererror ' , 'http404 ' , 'badheadererror ' , 'fix_location_header ' , 'jsonresponse ' , 'conditional_content_removal ' ,
+' ) 
 ```
 
-Obviously, something went wrong.
-I will investigate this after the finals. :)
+SeqGAN quickly loses the context in a long sequence.
+I will keep improve this in the future.
 
 ## Model
 
